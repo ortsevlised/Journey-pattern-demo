@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
 
+import static actions.WaitForLoading.*;
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
 /**
@@ -62,9 +63,8 @@ public class AddDocument implements Task {
                 Enters.theValue(VALID_ASSIGNEE).into(assignee));
 
         actor.attemptsTo(
-                Click.on(cancelBtn)
-        );
-        actor.attemptsTo(
+                Click.on(saveBtn),
+                waitForLoading()
         );
     }
 }

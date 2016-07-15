@@ -1,6 +1,5 @@
 package civihrtest;
 
-import actions.AddDocument;
 import actions.GoTo;
 import actions.Login;
 import actions.NavigateTo;
@@ -12,8 +11,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.openqa.selenium.WebDriver;
+import questions.Documents;
 
-import static net.serenitybdd.screenplay.GivenWhenThen.givenThat;
+import static actions.AddDocument.*;
+import static net.serenitybdd.screenplay.GivenWhenThen.*;
 
 /**
  * Created by jorge on 15/07/2016.
@@ -21,7 +22,7 @@ import static net.serenitybdd.screenplay.GivenWhenThen.givenThat;
 
 @RunWith(SerenityRunner.class)
 
-public class Documents {
+public class DocumentTests {
     @Managed
     private WebDriver theBrowser;
     private Actor theUser = Actor.named("Civi Admin");
@@ -34,12 +35,15 @@ public class Documents {
     }
 
     @Test
-    public void adding_and_removing_author_testing_save() throws Exception {
+    public void adding_a_new_document() throws Exception {
         givenThat(theUser).wasAbleTo(
                 NavigateTo.civiHrUrl(),
                 Login.with(ADMIN_USERNAME, ADMIN_PASSWORD),
-                GoTo.task("Documents"),
-                AddDocument.addDocument());
+                GoTo.task("Documents"));
+
+        when(theUser).attemptsTo(addDocument());
+
+        then(theUser).should(seeThat(Documents.isOnScreen("lala")));
     }
 }
 

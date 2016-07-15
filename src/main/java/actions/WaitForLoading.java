@@ -12,7 +12,7 @@ import static net.serenitybdd.screenplay.Tasks.instrumented;
  */
 
 public class WaitForLoading implements Performable {
-    Target spinner = Target.the("the loading spinner").locatedBy(".ct-spinner.ct-spinner-img");
+    Target spinner = Target.the("the loading spinner").locatedBy(".ct-spinner-img");
 
     public static WaitForLoading waitForLoading() {
         return instrumented(WaitForLoading.class);
