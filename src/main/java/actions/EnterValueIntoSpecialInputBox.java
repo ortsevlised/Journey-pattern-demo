@@ -1,5 +1,6 @@
 package actions;
 
+import jline.internal.Log;
 import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.Task;
 import net.serenitybdd.screenplay.actions.Click;
@@ -22,14 +23,18 @@ public class EnterValueIntoSpecialInputBox implements Task {
         this.value = value;
     }
 
-    @Step("{0} selects enters the value ")
+    @Step("{0} enters the #value:")
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(
             Click.on(div),
             Enter.theValue(value).into(inputBox)
         );
-        list.of(div.getCssOrXPathSelector()).resolveFor(actor).waitUntilClickable();
+        try {
+            list.of(div.getCssOrXPathSelector()).resolveFor(actor).waitUntilClickable();
+        }catch (org.openqa.selenium.NoSuchElementException e){
+            Log.info("This contact name didn't bring any result");
+        }
         Hit.the(Keys.ENTER).into(inputBox).performAs(actor);
     }
 }

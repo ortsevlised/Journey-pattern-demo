@@ -16,7 +16,7 @@ public class CloseNotification implements Performable {
         return instrumented(CloseNotification.class);
     }
 
-    @Step("if open {0} closes #alert")
+    @Step("if it is open, {0} closes #alert")
     @Override
     public <T extends Actor> void performAs(T actor) {
         if (alert.resolveFor(actor).isDisplayed()) {
@@ -24,5 +24,4 @@ public class CloseNotification implements Performable {
             alert.resolveFor(actor).waitUntilNotVisible();
         }
     }
-
 }
