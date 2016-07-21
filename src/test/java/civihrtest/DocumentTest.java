@@ -7,6 +7,7 @@ import net.serenitybdd.screenplay.Actor;
 import net.serenitybdd.screenplay.abilities.BrowseTheWeb;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.questions.WebElementQuestion;
+import net.serenitybdd.screenplay.targets.Target;
 import net.thucydides.core.annotations.Managed;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -35,6 +36,7 @@ import static org.hamcrest.core.Is.is;
 public class DocumentTest {
     @Managed
     private WebDriver theBrowser;
+
     DocumentDetails documentDetails;
     DocumentDetails anotherDocumentDetails;
     private final Actor theUser = Actor.named("Civi Admin");
@@ -59,7 +61,7 @@ public class DocumentTest {
     }
 
     @Test
-    public void adding_a_new_document_using_only_mandatory_fields() throws Exception {
+    public void adding_a_new_document_using_only_mandatory_fields_and_then_editing_it() throws Exception {
         documentDetails = new DocumentDetails(documentWithMandatoryFieldsOnly());
 
         when(theUser).attemptsTo(
@@ -71,6 +73,19 @@ public class DocumentTest {
                 seeThat(Document.isOnTheDocumentsList(documentDetails), is(true)),
                 seeThat(DocumentList.size(), is(1))
         );
+
+        documentDetails.setDueDate(DUE_DATE_TOMORROW);
+
+        theUser.attemptsTo(
+                EditDocument.withThisNewDocumentDetails(documentDetails),
+                SaveDocument.usingSaveButton()
+        );
+
+        then(theUser).should(
+                seeThat(Document.isOnTheDocumentsList(documentDetails), is(true)),
+                seeThat(DocumentList.size(), is(1))
+        );
+
     }
 
     @Test
@@ -135,11 +150,6 @@ public class DocumentTest {
         anotherDocument.put("assignee", VALID_ASSIGNEE);
         anotherDocument.put("documentType", documentType);
         anotherDocument.put("dueDate", DUE_DATE_TOMORROW);
-        anotherDocument.put("expDate", null);
-        anotherDocument.put("assignment", null);
-        anotherDocument.put("status", null);
-        anotherDocument.put("details", null);
-        anotherDocument.put("fileToUpload", null);
         return anotherDocument;
     }
 }

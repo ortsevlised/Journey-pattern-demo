@@ -3,7 +3,7 @@ package actions;
 import models.DocumentDetails;
 import net.serenitybdd.core.annotations.findby.By;
 import net.serenitybdd.screenplay.Actor;
-import net.serenitybdd.screenplay.Task;
+import net.serenitybdd.screenplay.Performable;
 import net.serenitybdd.screenplay.actions.Click;
 import net.serenitybdd.screenplay.actions.Enter;
 import net.serenitybdd.screenplay.actions.SelectFromOptions;
@@ -11,11 +11,10 @@ import net.serenitybdd.screenplay.targets.Target;
 import net.thucydides.core.annotations.Step;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 import static net.serenitybdd.screenplay.Tasks.instrumented;
 
-public class FillUpDocumentForm implements Task {
+public class FillUpDocumentForm implements Performable {
 
     public static final Target addDocumentBtn = Target.the("the add document button").located(By.partialLinkText("Add Document"));
     public static final Target selectDocumentType = Target.the("the document type option").locatedBy("[ng-model='document.activity_type_id']");
@@ -33,15 +32,11 @@ public class FillUpDocumentForm implements Task {
     public static final String VALID_ASSIGNEE = "Dr. Jina Blackwell";
     public static final String ANOTHER_VALID_CONTACT_ID = "testing thing";
     public static final String ANOTHER_VALID_ASSIGNEE = "testing thing";
-
-
-
     private final String contactId = "[ng-model='document.target_contact_id[0]']";
-    private final String assignee = "[ng-show^='document.assignee_contact_id']";
+    private static final String assignee = "[ng-show^='document.assignee_contact_id']";
     private final String assignment = "[ng-show='showAssignmentField']";
     private final String selectStatus = "[ng-show^='document.status_id']";
-
-    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    public static final Target assigneeInput = Target.the("the assignee input box").locatedBy(assignee);
     private final DocumentDetails document;
 
     public FillUpDocumentForm(DocumentDetails document) {
@@ -67,9 +62,10 @@ public class FillUpDocumentForm implements Task {
             Enter.theValue(document.getDueDate()).into(selectDueDate).performAs(actor);
         }
         if (document.getAssignee() != null) {
-            actor.attemptsTo(
-                    Click.on(addAssigneeLink),
-                    Enters.theValue(document.getAssignee()).into(assignee));
+            if (assigneeInput.resolveFor(actor).getAttribute("class").contains("hide")) {
+                Click.on(addAssigneeLink).performAs(actor);
+            }
+            Enters.theValue(document.getAssignee()).into(assignee).performAs(actor);
         }
 
         Click.on(showMoreBtn).performAs(actor);
