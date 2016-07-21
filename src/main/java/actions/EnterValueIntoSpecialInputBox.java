@@ -23,7 +23,7 @@ public class EnterValueIntoSpecialInputBox implements Task {
         this.value = value;
     }
 
-    @Step("{0} enters the #value:")
+    @Step("{0} enters the value: #value")
     @Override
     public <T extends Actor> void performAs(T actor) {
         actor.attemptsTo(

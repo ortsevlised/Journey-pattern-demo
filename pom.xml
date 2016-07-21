@@ -61,7 +61,7 @@
                 <version>2.18</version>
                 <configuration>
                     <includes>
-                        <include>**/features/**/When*.java</include>
+                        <include>**/*.java</include>
                     </includes>
                     <systemProperties>
                         <webdriver.driver>${webdriver.driver}</webdriver.driver>
